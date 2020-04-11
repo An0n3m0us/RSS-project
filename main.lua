@@ -124,29 +124,29 @@ function love.draw()
 		love.graphics.setFont(font)
 
         --glowy effect
-        for glowy = 1, 25 do
-			lg.setColor(255, 255, 255, 1)
+        for glowy = 1, 50 do
+			lg.setColor(255, 255, 255, 0.01)
 			lg.ellipse("fill", mouseX, mouseY, glowy*20, glowy*20)
         end
 
         --buttons!
         if mouseX > width/5 and mouseY > (9*height)/20 and mouseX < (3*width)/10 and mouseY < (11*height)/20 then
-			lg.setColor(100, 100, 100)
+          lg.setColor((100/255), (100/255), (100/255))
         else
-			lg.setColor(50, 50, 50)
+          lg.setColor((50/255), (50/255), (50/255))
         end
         lg.rectangle("fill", width/5, (9*height)/20, width/10, height/10)
 
         if mouseX > (7*width)/10 and mouseY > (9*height)/20 and mouseX < (4*width)/5 and mouseY < (11*height)/20 then
-            lg.setColor(100, 100, 100)
+          lg.setColor((100/255), (100/255), (100/255))
         else
-            lg.setColor(50, 50, 50)
+          lg.setColor((50/255), (50/255), (50/255))
         end
         lg.rectangle("fill", (7*width)/10, (9*height)/20, width/10, height/10)
 
         lg.setColor(255, 255, 255)
-		love.graphics.printf("Yes", -width/4, height/2 - 21.5, width, "center")
-		love.graphics.printf("No", width/4, height/2 - 21.5, width, "center")
+      love.graphics.printf("Yes", width/4, height/2 - 22, width, "center")
+      love.graphics.printf("No", -width/4, height/2 -22, width, "center")
 
         love.graphics.setFont(font2)
 		love.graphics.printf("Do you want audio?", 0, height/4 - 22, width, "center")
@@ -155,6 +155,9 @@ function love.draw()
     end
 
 	if page == "intro" then
+        if love.mouse.isDown( 1 ) then
+          page = "menu"
+        end
         if audiotoggle == true then
             audio:setVolume(0.5);
 			audio:setLooping(true)
@@ -186,3 +189,4 @@ function love.draw()
 		createButton(2, optionsbutton, 150, 380, 0.2, function() page = "options" end)
 	end
 end
+
