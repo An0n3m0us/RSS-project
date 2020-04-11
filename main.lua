@@ -130,23 +130,23 @@ function love.draw()
         end
 
         --buttons!
-        if mouseX > width/2 - width/4 - width/20 and mouseY > height/2 - height/20 and mouseX < width/2 - width/4 + width/20 and mouseY < height/2 + height/20 then
+        if mouseX > width/5 and mouseY > (9*height)/20 and mouseX < (3*width)/10 and mouseY < (11*height)/20 then
 			lg.setColor(100, 100, 100)
         else
 			lg.setColor(50, 50, 50)
         end
-        lg.rectangle("fill", width/2 - width/4 - width/20, height/2 - height/20, width/10, height/10)
+        lg.rectangle("fill", width/5, (9*height)/20, width/10, height/10)
 
-        if mouseX > width/2 + width/4 - width/20 and mouseY > height/2 - height/20 and mouseX < width/2 + width/4 + width/20 and mouseY < height/2 + height/20 then
+        if mouseX > (7*width)/10 and mouseY > (9*height)/20 and mouseX < (4*width)/5 and mouseY < (11*height)/20 then
             lg.setColor(100, 100, 100)
         else
             lg.setColor(50, 50, 50)
         end
-        lg.rectangle("fill", width/2 + width/4 - width/20, height/2 - height/20, width/10, height/10)
+        lg.rectangle("fill", (7*width)/10, (9*height)/20, width/10, height/10)
 
         lg.setColor(255, 255, 255)
-		love.graphics.printf("Yes", -width/2 + width/4, (height/2 - 22)+0.5, width, "center")
-		love.graphics.printf("No", width/2 - width/4, height/2 - 22+0.5, width, "center")
+		love.graphics.printf("Yes", -width/4, height/2 - 21.5, width, "center")
+		love.graphics.printf("No", width/4, height/2 - 21.5, width, "center")
 
         love.graphics.setFont(font2)
 		love.graphics.printf("Do you want audio?", 0, height/4 - 22, width, "center")
