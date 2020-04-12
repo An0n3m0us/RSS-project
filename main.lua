@@ -188,4 +188,3 @@ function love.draw()
 		createButton(2, optionsbutton, 150, 380, 0.2, function() page = "options" end)
 	end
 end
-
