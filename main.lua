@@ -14,8 +14,8 @@ height = lg.getHeight()
 
 function love.load()
 	-- Images
-    logo = lg.newImage("assets/images/snail studios logo.png");
-    backgroundimage = lg.newImage("assets/images/background placeholder.png");
+	logo = lg.newImage("assets/images/snail studios logo.png");
+	backgroundimage = lg.newImage("assets/images/background placeholder.png");
 	titlescreen = lg.newImage("assets/images/title_screen.png")
 	playbutton = lg.newImage("assets/images/play button.png")
 	optionsbutton = lg.newImage("assets/images/settings button.png")
@@ -95,15 +95,15 @@ function createButton(id, image, x, y, scale, func)
 	and mouseX < (x + (image:getWidth()*scale)/2) and mouseY < (y + (image:getHeight()*scale)/2) then
 		lg.draw(image, x, y, -0.1, scale+0.05, scale+0.05, image:getWidth()/2, image:getHeight()/2)
 		if buttons[tostring(id)].sfx1 == false and audiotoggle == true then
-            sfx1:play()
+            		sfx1:play()
 			buttons[tostring(id)].sfx1 = true
-        end
+        	end
 
 		if lm.isDown(1) then
 			if buttons[tostring(id)].sfx2 == false and audiotoggle == true then
 		        sfx2:play()
-				buttons[tostring(id)].sfx2 = true
-		    end
+			buttons[tostring(id)].sfx2 = true
+		end
 			func()
 		else
 			buttons[tostring(id)].sfx2 = false
@@ -119,65 +119,64 @@ function love.draw()
 	mouseY = love.mouse.getY()
 
 	if page == "options" then
-        --darkness!
-        lg.setBackgroundColor(0, 0, 0)
+		--darkness!
+		lg.setBackgroundColor(0, 0, 0)
 		love.graphics.setFont(font)
 
-        --glowy effect
-        for glowy = 1, 50 do
+		--glowy effect
+		for glowy = 1, 50 do
 			lg.setColor(255, 255, 255, 0.01)
 			lg.ellipse("fill", mouseX, mouseY, glowy*20, glowy*20)
-        end
+		end
 
-        --buttons!
-        if mouseX > width/5 and mouseY > (9*height)/20 and mouseX < (3*width)/10 and mouseY < (11*height)/20 then
-          lg.setColor((100/255), (100/255), (100/255))
-        else
-          lg.setColor((50/255), (50/255), (50/255))
-        end
-        lg.rectangle("fill", width/5, (9*height)/20, width/10, height/10)
+		--buttons!
+		if mouseX > width/5 and mouseY > (9*height)/20 and mouseX < (3*width)/10 and mouseY < (11*height)/20 then
+			lg.setColor((100/255), (100/255), (100/255))
+		else
+			lg.setColor((50/255), (50/255), (50/255))
+		end
+		lg.rectangle("fill", width/5, (9*height)/20, width/10, height/10)
 
-        if mouseX > (7*width)/10 and mouseY > (9*height)/20 and mouseX < (4*width)/5 and mouseY < (11*height)/20 then
-          lg.setColor((100/255), (100/255), (100/255))
-        else
-          lg.setColor((50/255), (50/255), (50/255))
-        end
-        lg.rectangle("fill", (7*width)/10, (9*height)/20, width/10, height/10)
+		if mouseX > (7*width)/10 and mouseY > (9*height)/20 and mouseX < (4*width)/5 and mouseY < (11*height)/20 then
+			lg.setColor((100/255), (100/255), (100/255))
+		else
+			lg.setColor((50/255), (50/255), (50/255))
+		end
+		lg.rectangle("fill", (7*width)/10, (9*height)/20, width/10, height/10)
 
-        lg.setColor(255, 255, 255)
-      love.graphics.printf("Yes", width/4, height/2 - 22, width, "center")
-      love.graphics.printf("No", -width/4, height/2 -22, width, "center")
+		lg.setColor(255, 255, 255)
+	      	love.graphics.printf("Yes", width/4, height/2 - 22, width, "center")
+	      	love.graphics.printf("No", -width/4, height/2 -22, width, "center")
 
-        love.graphics.setFont(font2)
+		love.graphics.setFont(font2)
 		love.graphics.printf("Do you want audio?", 0, height/4 - 22, width, "center")
-
-        love.graphics.setFont(font)
-    end
+		love.graphics.setFont(font)
+	end
 
 	if page == "intro" then
-        if love.mouse.isDown( 1 ) then
-          page = "menu"
-        end
-        if audiotoggle == true then
-            audio:setVolume(0.5);
+		if love.mouse.isDown( 1 ) then
+			page = "menu"
+		end
+		if audiotoggle == true then
+			audio:setVolume(0.5);
 			audio:setLooping(true)
-            audio:play();
-        end
+			audio:play();
+		end
 
-        lg.setBackgroundColor(0, 0, 0)
+        	lg.setBackgroundColor(0, 0, 0)
 
-        if menuintro < logo:getHeight()*1.1 then
-            menuintro = menuintro + 1
-        else
-            page = "menu"
-        end
+		if menuintro < logo:getHeight()*1.1 then
+			menuintro = menuintro + 1
+		else
+			page = "menu"
+		end
 
 		lg.setColor(255, 255, 255, 255)
-        lg.draw(logo, width/2, height/2, 0, 0.5+menuintro/logo:getWidth()/2, 0.5+menuintro/logo:getHeight()/2, logo:getWidth()/2, logo:getHeight()/2);
+		lg.draw(logo, width/2, height/2, 0, 0.5+menuintro/logo:getWidth()/2, 0.5+menuintro/logo:getHeight()/2, logo:getWidth()/2, logo:getHeight()/2);
 		lg.setColor(0, 0, 0, -300 + menuintro/(logo:getHeight()/1.5)*355)
-        lg.rectangle("fill", 0, 0, width, height)
+		lg.rectangle("fill", 0, 0, width, height)
 		lg.setColor(255, 255, 255, 255)
-    end
+   	 end
 
 	if page == "menu" then
 		lg.draw(titlescreen, 0, 0, 0, width/titlescreen:getWidth(), height/titlescreen:getHeight())
