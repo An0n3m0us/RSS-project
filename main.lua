@@ -177,36 +177,44 @@ end
 
 function love.update(dt)
 	if page == "game" then
-		if paused == false then
-		    if love.keyboard.isDown("w") then
-		        y = y - playerspeed
-		    end
-		    if love.keyboard.isDown("a") then
-		        x = x - playerspeed
-		    end
-		    if love.keyboard.isDown("s") then
-		        y = y + playerspeed
-		    end
-		    if love.keyboard.isDown("d") then
-		        x = x + playerspeed
-		    end
-		end
-		
-		-- Escape
-		if love.keyboard.isDown("p") then
-		    if paused == true then
-		        paused = false
-		    else
-		        paused = true
-		    end
-		end
+		function love.textinput(key)
+		  -- Escape
+		  if love.keyboard.isDown("p") then
+		      if paused == true then
+		          paused = false
+		      else
+		          paused = true
+		      end
+		  -- Return to menu
+		  elseif paused == true then
+		      if love.keyboard.isDown("m") then
+		          page = "menu"
+		          paused = false
+		      end
+		  elseif love.keyboard.isDown("w") then
+		    y = y - playerspeed
+		  elseif love.keyboard.isDown("a") then
+		    x = x - playerspeed
+		  elseif love.keyboard.isDown("s") then
+		    y = y + playerspeed
+		  elseif love.keyboard.isDown("d") then
+		    x = x + playerspeed
+		  elseif tonumber(key) ~= nil and tonumber(key) > 0 and tonumber(key) < 7 then 
+		    --Iteration
+		    print(key)
+		    table.insert(unitX, mouseX + x)
+		    table.insert(unitY, mouseY + y)
 
-		-- Return to menu
-		if paused == true then
-		    if love.keyboard.isDown("m") then
-		        page = "menu"
-		        paused = false
-		    end
+		    table.insert(unittype, tonumber(key) - 1)
+		    table.insert(unitmaxhealth, math.floor((tonumber(key)-2)/2))
+		    table.insert(ar, -1)
+		    table.insert(ad, false)
+		    table.insert(as, 0.1)
+		    table.insert(unitanimation, "idle")
+		  else
+		    print("Entered an incorrect key")
+		  end
+		  
 		end
 	end
 end
@@ -433,6 +441,10 @@ function love.draw()
 			lg.draw(castle, width - x, -y, 0, width/castle:getWidth(), height/castle:getHeight())
 			lg.draw(sunnyhut, -width/2 - x, -y, 0, width/sunnyhut:getWidth()/2, height/sunnyhut:getHeight())
 			--lg.printf(aseed, width*10 - x, -y, width, "center")
+			for drawunit = 1, table.getn(unittype) do
+				z = lg.newImage(unit[unittype[drawunit]+1])
+				lg.draw(z, unitX[drawunit] - x - unitsize[1]/4, unitY[drawunit] - y - unitsize[2])
+			end
         end
 	end
 end
