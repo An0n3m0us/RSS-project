@@ -14,8 +14,8 @@ height = lg.getHeight()
 
 function love.load()
 	-- Images
-	logo = lg.newImage("assets/images/snail studios logo.png");
-	backgroundimage = lg.newImage("assets/images/background placeholder.png");
+    logo = lg.newImage("assets/images/snail studios logo.png");
+    backgroundimage = lg.newImage("assets/images/background placeholder.png");
 	titlescreen = lg.newImage("assets/images/title_screen.png")
 	playbutton = lg.newImage("assets/images/play button.png")
 	settingsbutton = lg.newImage("assets/images/settings button.png")
@@ -265,8 +265,8 @@ function love.draw()
 			-- Check if mouse clicked
 			if lm.isDown(1) then
 				page = "menu"
-				audiotoggle = true
-				audio:play()
+                audiotoggle = true
+                audio:play()
 			end
         else
 			lg.setColor(50/255, 50/255, 50/255)
@@ -277,57 +277,57 @@ function love.draw()
         if mouseX > (7*width)/20 and mouseY > (9*height)/20 and mouseX < (4*width)/5 and mouseY < (11*height)/20 then
 		lg.setColor(100/255, 100/255, 100/255)
 
-		-- Check if mouse clicked
-		if lm.isDown(1) then
-			page = "menu"
-                	audiotoggle = false
-			audio:stop()
-			audio2:stop()
-		end
+			-- Check if mouse clicked
+			if lm.isDown(1) then
+				page = "menu"
+                audiotoggle = false
+				audio:stop()
+				audio2:stop()
+			end
         else
             lg.setColor(50/255, 50/255, 50/255)
         end
         lg.rectangle("fill", (7*width)/10, (9*height)/20, width/10, height/10)
 
         lg.setColor(1, 1, 1)
-	love.graphics.printf("Yes", -width/4, (height/2 - 21.5, width, "center")
-	love.graphics.printf("No", width/4, height/2 - 21.5, width, "center")
+		love.graphics.printf("Yes", -width/4, height/2 - 21.5, width, "center")
+		love.graphics.printf("No", width/4, height/2 - 21.5, width, "center")
 
         love.graphics.setFont(settingsfont2)
-	love.graphics.printf("Do you want audio?", 0, height/4 - 22, width, "center")
+		love.graphics.printf("Do you want audio?", 0, height/4 - 22, width, "center")
 
         love.graphics.setFont(settingsfont)
     end
 
 	if page == "intro" then
 		-- Set BGM
-		if(lm.isDown(1)) then
+		if lm.isDown(1) then
 			page = "menu"
 		end
 		if audiotoggle == true then
 		    audio:setVolume(0.5);
-				audio:setLooping(true)
+			audio:setLooping(true)
 		    audio:play();
 		end
 
 		lg.setBackgroundColor(0, 0, 0)
 
-			-- Check if intro is done
-		if menuintro < logo:getHeight()*1.1 then
-		    menuintro = menuintro + 1
-		else
-		    page = "menu"
-		end
+		-- Check if intro is done
+        if menuintro < logo:getHeight()*1.1 then
+            menuintro = menuintro + 1
+        else
+            page = "menu"
+        end
 
 		-- Logo
 		lg.setColor(1, 1, 1)
-        	lg.draw(logo, width/2, height/2, 0, 0.5+menuintro/logo:getWidth()/2, 0.5+menuintro/logo:getHeight()/2, logo:getWidth()/2, logo:getHeight()/2);
+		lg.draw(logo, width/2, height/2, 0, 0.5+menuintro/logo:getWidth()/2, 0.5+menuintro/logo:getHeight()/2, logo:getWidth()/2, logo:getHeight()/2);
 
 		-- Fade out
 		lg.setColor(0, 0, 0, (-300 + menuintro/(logo:getHeight()/1.5)*355)/255)
-        	lg.rectangle("fill", 0, 0, width, height)
+		lg.rectangle("fill", 0, 0, width, height)
 		lg.setColor(1, 1, 1)
-    	end
+	end
 
 	-- Menu page
 	if page == "menu" then
@@ -359,7 +359,7 @@ function love.draw()
 					sfx2:play()
 				end
 
-				-- Random something (shh)
+				-- Random something
 				for nmbgen = 0, 1000 do
 					aseed = math.floor(((aa * aseed + ac) % am) + 0.5)
 				end
@@ -432,6 +432,7 @@ function love.draw()
 			lg.draw(backgroundimage, -x, -y, 0, width/backgroundimage:getWidth(), height/backgroundimage:getHeight())
 			lg.draw(castle, width - x, -y, 0, width/castle:getWidth(), height/castle:getHeight())
 			lg.draw(sunnyhut, -width/2 - x, -y, 0, width/sunnyhut:getWidth()/2, height/sunnyhut:getHeight())
-        	end
+			--lg.printf(aseed, width*10 - x, -y, width, "center")
+        end
 	end
 end
