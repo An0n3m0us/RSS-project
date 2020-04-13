@@ -201,13 +201,17 @@ iwa = {131, 57, 52, 41, 62, 61}
 iha = {165, 62, 134, 115, 107, 116}
 
 bodypart = function(t1, t2, r, l, ix, iy, iw, ih)
-    lg.translate(t1, t2)
-    lg.rotate(r)
-    if t1 == t1a[1]/zoom then
-        lg.setPointSize(10)
-        lg.points(ix, iy)
-    end
-    lg.draw(l, ix, iy, 0, iw/l:getWidth(), ih/l:getHeight())
+    lg.push()
+    lg.translate(-10, -42)
+    lg.setPointSize(10)
+    lg.points(0, 0)
+    lg.draw(l, -48/2, -28/2, math.rad(r), iw/l:getWidth(), ih/l:getHeight())
+
+    lg.setColor(1, 1, 1, 1)
+    lg.rectangle("fill", 50, 50, 50, 50)
+    lg.rotate(5)
+    lg.rectangle("fill", 50, 50, 50, 50)
+    lg.pop()
 end
 
 function love.keypressed(key)
@@ -585,10 +589,9 @@ function love.draw()
                     ra[6] = -ar[drawunit]/50 -- R_LEG
                 end
                 
-                for bpd = 1, 6 do
-                    lg.push()
-                    bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
-                    lg.pop()
+                for bpd = 1, 1 do -- 6
+                    --bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
+                    bodypart(t1a[bpd], t2a[bpd], ra[bpd], bodyparts[bpd], ixa[bpd], iya[bpd], iwa[bpd], iha[bpd])
                 end
                 lg.pop()
             end
