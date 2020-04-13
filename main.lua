@@ -68,6 +68,8 @@ function love.load()
     gamefont = lg.newFont((width + height)/100)
     introfont = lg.newFont((width+height)/25)
     hudfont = lg.newFont((width+height)/40)
+    pausedfont = lg.newFont((width + height)/10)
+    debugfont = lg.newFont(30)
 end
 
 -- Variables
@@ -231,6 +233,23 @@ function love.keypressed(key)
             end
         end
     end
+
+    -- Escape
+    if lk.isDown("p") then
+        if paused == true then
+            paused = false
+        else
+            paused = true
+        end
+    end
+
+    -- Return to menu
+    if paused == true then
+        if lk.isDown("m") then
+            page = "menu"
+            paused = false
+        end
+    end
 end
 
 function love.update(dt)
@@ -247,23 +266,6 @@ function love.update(dt)
             end
             if lk.isDown("d") then
                 x = x + playerspeed
-            end
-        end
-
-        -- Escape
-        if lk.isDown("p") then
-            if paused == true then
-                paused = false
-            else
-                paused = true
-            end
-        end
-
-        -- Return to menu
-        if paused == true then
-            if lk.isDown("m") then
-                page = "menu"
-                paused = false
             end
         end
     end
@@ -656,7 +658,8 @@ function love.draw()
 
 
 
-        --HUD
+
+        -- HUD
         if "HUD" then
             --main art settings
             lg.setColor(1, 1, 1, 1)
@@ -713,7 +716,49 @@ function love.draw()
             end
         end
 
+        -- Pause menu
+        if paused == true then
+            lg.setColor(0, 0, 0, 100/255)
+            lg.rectangle("fill", 0, 0, width, height)
+
+            lg.setColor(1, 1, 1)
+            lg.printf("Press 'P' again to resume!\nPress 'M' to go back to the main menu!", 0, height/1.5, width, "center")
+            lg.setFont(pausedfont)
+            lg.printf("PAUSED", 0, height/4, width, "center")
+        end
+    elseif page == "debug" then
         lg.setColor(1, 1, 1, 1)
+
+        if aseed < 8 then
+            lg.setBackgroundColor(0, 0, 0)
+        else
+            code = code + 1
+            lg.draw(rainbow, 0, -height + code%height, 0, width/rainbow:getWidth(), height/rainbow:getHeight())
+            lg.draw(rainbow, 0, 0 + code%height, 0, width/rainbow:getWidth(), height/rainbow:getHeight())
+        end
+
+        if aseed == 11 then
+            lg.draw(sscpeek, width/1.5, height/1.5, 0, (width/4)/sscpeek:getWidth(), (height/4)/sscpeek:getHeight())
+        end
+
+        lg.setFont(debugfont)
+
+        if mpd == false then
+            lg.draw(taco, mouseX - 100, mouseY - 75, 0, 200/taco:getWidth(), 150/taco:getHeight())
+        else
+            lg.draw(taco, mouseX - 95, mouseY - 70, 0, 190/taco:getWidth(), 140/taco:getHeight())
+        end
+        if aseed < 8 then
+            lg.setColor(1, 1, 1)
+        else
+            lg.setColor(0, 0, 0)
+        end
+
+        if ocatwords[aseed] then
+            lg.printf(ocatwords[aseed], mouseX, mouseY - 100, width, "center")
+        end
     end
+
+    lg.setColor(1, 1, 1, 1)
 end
 
