@@ -67,6 +67,7 @@ function love.load()
     settingsfont2 = lg.newFont(50)
     gamefont = lg.newFont((width + height)/100)
     introfont = lg.newFont((width+height)/25)
+    hudfont = lg.newFont((width+height)/40)
 end
 
 -- Variables
@@ -492,7 +493,7 @@ function love.draw()
             lg.setBackgroundColor(100 / 255, 100 / 255, 100 / 255)
 
             -- General settings
-            --stroke(50) -- MIGHT NEED CHANGING
+            --stroke(50) -- TODO
             lg.setLineWidth(10)
             lg.setLineStyle("smooth")
             lg.setFont(gamefont)
@@ -651,6 +652,66 @@ function love.draw()
 			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
 		    end
 	    end
+
+
+
+
+        --HUD
+        if "HUD" then
+            --main art settings
+            lg.setColor(1, 1, 1, 1)
+            --stroke(0) -- TODO
+
+            --main panel
+            lg.draw(mainhud, -3, height/1.25 + 3, 0, (width + 3)/mainhud:getWidth(), (height/5)/mainhud:getHeight())
+
+            lg.setColor(100/255, 50/255, 25/255, 250/255)
+
+            selectedunits = 0 -- TODO MAY HAVE PROBLEM WITH ARRAY INDEXES
+            for i = 1, #unitX do
+                if unitSelect[selectpanel] == true then
+                    IDredirect[selectedunits] = selectpanel
+                    selectedunits = selectedunits + 1
+                end
+            end
+            if selectedunits ~= 0 then
+                --unit panel (light)
+                lg.rectangle("fill", width/4, height/1.25 + height/100, width/2, height/5.5)
+                lg.rectangle("line", width/4, height/1.25 + height/100, width/2, height/5.5)
+            else
+                --unit panel (dark)
+                lg.setColor(50/255, 25/255, 25/255)
+                lg.rectangle("fill", width/4, height/1.25 + height/100, width/2, height/5.5)
+                lg.rectangle("line", width/4, height/1.25 + height/100, width/2, height/5.5)
+
+                --text
+                lg.setColor(0, 0, 0)
+                lg.setFont(hudfont)
+                lg.printf("NO UNITS SELECTED", 0, height/1.1, width, "center")
+            end
+
+            --for (var selectedrow = 0 selectedrow < 5 selectedrow++ then
+                --if selectedunits > selectedrow then
+                    --making a loop to show selected units better.
+                --end
+            --end
+
+            if selectedunits < 11 then
+                for unitpanel = 1, selectedunits do
+                    unitpanelgraphic(width/4 + width/20.2*unitpanel + width/200, height/1.25 + height/50, width/22.5, height/6.2, IDredirect[unitpanel])
+                end
+            end
+            if selectedunits > 10 and selectedunits < 21 then
+                for unitpanel2 = 1, selectedunits do
+                    if unitpanel2 < 10 then
+                        unitpanelgraphic(width/4 + width/20.2*unitpanel2 + width/200, height/1.25 + height/50, width/22.5, height/13, IDredirect[unitpanel2])
+                    end
+                    if unitpanel2 > 9 then
+                        unitpanelgraphic(width/4 + width/20.2*(unitpanel2-10) + width/200, height/1.25 + height/50 + height/11.8, width/22.5, height/13, IDredirect[unitpanel2])
+                    end
+                end
+            end
+        end
 
         lg.setColor(1, 1, 1, 1)
     end
