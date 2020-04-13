@@ -202,15 +202,9 @@ iha = {165, 62, 134, 115, 107, 116}
 
 bodypart = function(t1, t2, r, l, ix, iy, iw, ih)
     lg.push()
-    lg.translate(-10, -42)
-    lg.setPointSize(10)
-    lg.points(0, 0)
-    lg.draw(l, -48/2, -28/2, math.rad(r), iw/l:getWidth(), ih/l:getHeight())
-
-    lg.setColor(1, 1, 1, 1)
-    lg.rectangle("fill", 50, 50, 50, 50)
-    lg.rotate(5)
-    lg.rectangle("fill", 50, 50, 50, 50)
+    lg.translate(t1, t2)
+    lg.rotate(r)
+    lg.draw(l, ix, iy, 0, iw/l:getWidth(), ih/l:getHeight())
     lg.pop()
 end
 
@@ -580,18 +574,17 @@ function love.draw()
                 end
                 if unitanimation[drawunit] == "idle" then
                     as[drawunit] = 0.03
-                    lg.rotate(math.rad(ar[drawunit]/100))
-                    ra[1] = ar[drawunit]/50 -- L_ARM
-                    ra[2] = ar[drawunit]/50 -- HEAD
-                    ra[3] = 0 -- BODY?
-                    ra[4] = -ar[drawunit]/50 -- R_ARM
-                    ra[5] = -ar[drawunit]/50 -- L_LEG
-                    ra[6] = -ar[drawunit]/50 -- R_LEG
+                    lg.rotate(ar[drawunit]/100)
+                    ra[1] = ar[drawunit]/50
+                    ra[2] = ar[drawunit]/50
+                    ra[3] = 0
+                    ra[4] = -ar[drawunit]/50
+                    ra[5] = -ar[drawunit]/50
+                    ra[6] = -ar[drawunit]/50
                 end
                 
-                for bpd = 1, 1 do -- 6
-                    --bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
-                    bodypart(t1a[bpd], t2a[bpd], ra[bpd], bodyparts[bpd], ixa[bpd], iya[bpd], iwa[bpd], iha[bpd])
+                for bpd = 1, 6 do
+                    bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
                 end
                 lg.pop()
             end
@@ -637,20 +630,24 @@ function love.draw()
                 end
             end
         end
-	for healthbars = 1, #unitX do
-		strokeWeight(1);
-		if unittype[healthbars]%2 == 0 then
-			lg.setColor(100/255, 0, 0)
-			lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
-			lg.setColor(1, 0, 0)
-			lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2)]0.5), unitsize[2]/100);
-		else
-			lg.setColor(100/255, 0, 0);
-			lg.rectangle(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
-			lg.setColor(1, 0, 0);
-			lg.rectangle(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2)]+0.5), unitsize[2]/100);
-		end
-	end
+
+        -- CHECK STROKE STUFF AND CODE
+	    for healthbars = 1, #unitX do
+		    --strokeWeight(1);
+		    if unittype[healthbars]%2 == 0 then
+			    lg.setColor(100/255, 0, 0)
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+			    lg.setColor(1, 0, 0)
+			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+		    else
+			    lg.setColor(100/255, 0, 0);
+			    lg.rectangle(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
+			    lg.setColor(1, 0, 0);
+			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+		    end
+	    end
+
+        lg.setColor(1, 1, 1, 1);
     end
 end
 
