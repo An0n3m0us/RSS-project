@@ -14,6 +14,8 @@ lw = love.window
 width = lg.getWidth()
 height = lg.getHeight()
 
+function math.round(n, deci) deci = 10^(deci or 0) return math.floor(n*deci+.5)/deci end
+
 function love.load()
     -- Images
     logo = lg.newImage("assets/images/snail studios logo.png")
@@ -218,7 +220,7 @@ function love.keypressed(key)
                     unitX[#unitX] = mouseX + x
                     unitY[#unitY] = mouseY + y
                     unittype[#unittype] = tonumber(key) - 1
-                    unithealth[#unithealth] = unitmaxhealth[math.floor(((tonumber(key) - 2) / 2) + 0.5)]
+                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key) - 2) / 2), 0)]
                     ar[#ar] = -1
                     ad[#ad] = false
                     as[#as] = 0.1
@@ -631,23 +633,26 @@ function love.draw()
             end
         end
 
-        -- CHECK STROKE STUFF AND CODE
 	    for healthbars = 1, #unitX do
-		    --strokeWeight(1);
+            love.graphics.setLineWidth(1)
 		    if unittype[healthbars]%2 == 0 then
 			    lg.setColor(100/255, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+                lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100);
+                lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100);
 		    else
 			    lg.setColor(100/255, 0, 0);
-			    lg.rectangle(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
 			    lg.setColor(1, 0, 0);
-			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
 		    end
 	    end
 
-        lg.setColor(1, 1, 1, 1);
+        lg.setColor(1, 1, 1, 1)
     end
 end
 
