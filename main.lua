@@ -203,8 +203,11 @@ iha = {165, 62, 134, 115, 107, 116}
 bodypart = function(t1, t2, r, l, ix, iy, iw, ih)
     lg.translate(t1, t2)
     lg.rotate(r)
-    --image(l, ix, iy, iw, ih)
-    lg.draw(l, ix, iy, 0, 1, 1, l:getWidth() / 2, l:getHeight() / 2)
+    if t1 == t1a[1]/zoom then
+        lg.setPointSize(10)
+        lg.points(ix, iy)
+    end
+    lg.draw(l, ix, iy, 0, iw/l:getWidth(), ih/l:getHeight())
 end
 
 function love.keypressed(key)
@@ -574,12 +577,12 @@ function love.draw()
                 if unitanimation[drawunit] == "idle" then
                     as[drawunit] = 0.03
                     lg.rotate(math.rad(ar[drawunit]/100))
-                    ra[1] = ar[drawunit]/50
-                    ra[2] = ar[drawunit]/50
-                    ra[3] = 0
-                    ra[4] = -ar[drawunit]/50
-                    ra[5] = -ar[drawunit]/50
-                    ra[6] = -ar[drawunit]/50
+                    ra[1] = ar[drawunit]/50 -- L_ARM
+                    ra[2] = ar[drawunit]/50 -- HEAD
+                    ra[3] = 0 -- BODY?
+                    ra[4] = -ar[drawunit]/50 -- R_ARM
+                    ra[5] = -ar[drawunit]/50 -- L_LEG
+                    ra[6] = -ar[drawunit]/50 -- R_LEG
                 end
                 
                 for bpd = 1, 6 do
