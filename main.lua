@@ -631,6 +631,20 @@ function love.draw()
                 end
             end
         end
+	for healthbars = 1, table.getn(unitX) do
+	    strokeWeight(1);
+	    if unittype[healthbars]%2 == 0 then
+		lg.setColor(100/255, 0, 0)
+		lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+		lg.setColor(1, 0, 0)
+		lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2)]), unitsize[2]/100);
+	    else
+		lg.setColor(100/255, 0, 0);
+		lg.rectangle(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
+		lg.setColor(1, 0, 0);
+		rect(unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2)]), unitsize[2]/100);
+	    end
+	end
     end
 end
 
