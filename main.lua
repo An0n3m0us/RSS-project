@@ -220,15 +220,15 @@ function love.keypressed(key)
         if paused == false then
             if tonumber(key) ~= nil then
                 if tonumber(key) > 0 and tonumber(key) < 7 then
-                    unitX[#unitX] = mouseX + x
-                    unitY[#unitY] = mouseY + y
-                    unittype[#unittype] = tonumber(key) - 1
-                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key) - 2) / 2), 0)]
-                    ar[#ar] = -1
-                    ad[#ad] = false
-                    as[#as] = 0.1
+                    unitX[#unitX+1] = mouseX + x
+                    unitY[#unitY+1] = mouseY + y
+                    unittype[#unittype+1] = tonumber(key) - 1
+                    unithealth[#unithealth+1] = unitmaxhealth[math.round(((tonumber(key)) / 2), 0)]
+                    ar[#ar+1] = -1
+                    ad[#ad+1] = false
+                    as[#as+1] = 0.1
                     zoom = 1
-                    unitanimation[#unitanimation] = "idle"
+                    unitanimation[#unitanimation+1] = "idle"
                 end
             end
         end
