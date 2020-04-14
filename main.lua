@@ -223,7 +223,7 @@ function love.keypressed(key)
                     unitX[#unitX] = mouseX + x
                     unitY[#unitY] = mouseY + y
                     unittype[#unittype] = tonumber(key) - 1
-                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key) - 2) / 2), 0)]
+                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key)) / 2), 0)]
                     ar[#ar] = -1
                     ad[#ad] = false
                     as[#as] = 0.1
@@ -643,20 +643,21 @@ function love.draw()
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100);
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100);
 		    else
 			    lg.setColor(100/255, 0, 0);
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
 			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
 			    lg.setColor(1, 0, 0);
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
-			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)]), unitsize[2]/100);
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6,
+				unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100)
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100);
 		    end
 	    end
 		
 		--special stuff hardly ever messed with
-		if("special") then
+		if "special" then
 			--selection box
 			if mousedrag == true then
 				strokeWeight(1)
@@ -664,7 +665,7 @@ function love.draw()
 				lg.rectangle(mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
 			end
 			--more of an achievement, really
-		    if(easteregg == true and eggtimer > 0 then
+		    if easteregg == true and eggtimer > 0 then
 		        strokeWeight(10);
 		        lg.setColor(75/255, 75/255, 75/255)
 		        lg.rectangle(sw/2 - sw/5, 0, sw/2.5, sh/10, 50)
@@ -673,11 +674,11 @@ function love.draw()
 		        lg.printf('Achievement earned!\n"Visit a castle!"', sw/2, sh/20);
 
 		        lg.draw(castle, sw/2 - sw/7.5, sh/100)
-		        eggtimer -= 1;
+		        eggtimer = eggtimer - 1;
 		    end
 
-			if ("debugging") then
-				if (tonumber(code) == aseed) then
+			if "debugging" then
+				if tonumber(code) == aseed then
 				    aseed = 0
 				    page = "debug"
 				    ocatwords = {"You've unlocked the taco!", "Now you see, this is all there is to the easteregg.", "There's NO secrets within secrets.", "We here at Rolling Snail Studios head quarters don't do META things.", "You won't find anything!", "Nothing at all.", "Just empty void and messages galore!", "Oh for god's sake...", "Fine, here, take a rainbow-y background!", "Does that satisfy your easteregg-finding desires?", "No?", "Well, take a direct look at the super secret channel then!", "It would appear I am on my own in creating this easter egg...", "So, I shall take inspiration from my old button games and\nput what could never be accepted as a whole game in this secret!", "Enjoy!", "Right, so, you're looking for a secret within a secret.", "Which, I shall claim, does not exist.", "Yet, you persist onwards!", "What do you want from me? A medal?", "Goodness, the artists are working hard enough on the main game!", "Can't you be happy with a taco?", "Surely there's no need for you to continue...", "This is madness I tell you!", "Pure and utter madness!"};
@@ -791,4 +792,5 @@ function love.draw()
 
     lg.setColor(1, 1, 1, 1)
 end
+
 
