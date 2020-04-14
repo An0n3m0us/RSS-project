@@ -500,6 +500,7 @@ function love.draw()
             lg.setLineStyle("smooth")
             lg.setFont(gamefont)
         end
+
 		function love.mousepressed( x, y, button, istouch, presses )
 			if button == 1 then
 				mousedrag = true
@@ -578,6 +579,7 @@ function love.draw()
                 end
             end
 		end
+
         if "map" then
             lg.draw(backgroundimage, -x, -y, 0, width / backgroundimage:getWidth(), height / backgroundimage:getHeight())
             lg.draw(castle, width - x, -y, 0, width / castle:getWidth(), height / castle:getHeight())
@@ -598,7 +600,7 @@ function love.draw()
         -- Drawing the units!
         for drawunit = 1, #unitX do
             -- Movement
-            if tonumber(destinationX[drawunit]) ~= nil and tonumber(destinationX[drawunit]) > 0 and paused == false then
+            if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) and paused == false then
                 unitX[drawunit] = unitX[drawunit] + unitspeed*(destinationX[drawunit] - unitX[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
                 unitY[drawunit] = unitY[drawunit] + unitspeed*(destinationY[drawunit] - unitY[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
                 unitanimation[drawunit] = "walk"
@@ -672,7 +674,7 @@ function love.draw()
             end
 
             --destination flag
-            if tonumber(destinationX[drawunit]) ~= nil and tonumber(destinationX[drawunit]) > 0 then
+            if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) then
                 lg.setColor(0, 0, 0)
                 lg.setFont(gamefont)
                 lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "center")
@@ -714,54 +716,60 @@ function love.draw()
         end
 
 	    for healthbars = 1, #unitX do
-	    love.graphics.setLineWidth(1)
+	        love.graphics.setLineWidth(1)
 		    if unittype[healthbars]%2 == 0 then
 			    lg.setColor(100/255, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
-		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
-		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		    else
 			    lg.setColor(100/255, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6,
-				unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100)
-			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100)
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		    end
 	    end
-		
-		--special stuff hardly ever messed with
-			--selection box
-			if mousedrag == true then
-				lg.setColor(0, 1, 1, 50/255)
-				lg.rectangle("fill", mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
-			end
-			--more of an achievement, really
-		    if easteregg == true and eggtimer > 0 then
-		        lg.setColor(75/255, 75/255, 75/255)
-		        lg.rectangle("fill", width/2 - width/5, 0, width/2.5, height/10, 50)
-		        
-		        lg.setColor(0, 0, 0)
-		        lg.printf('Achievement earned!\n"Visit a castle!"', 0, width/2, height/20, "center")
 
-		        lg.draw(castle, width/2 - width/7.5, height/100)
-		        eggtimer = eggtimer - 1
-		    end
+        -- Extra settings hardly messed with
+        if "special" then
+            --selection box.
+            if mousedrag == true then
+		        lg.setLineWidth(1)
+	            lg.setColor(0, 1, 1, 50/255)
+	            lg.rectangle("fill", mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
+	            lg.rectangle("line", mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
+            end
 
-			if "debugging" then
-				if tonumber(code) == aseed then
-				    aseed = 0
-				    page = "debug"
-				    ocatwords = {"You've unlocked the taco!", "Now you see, this is all there is to the easteregg.", "There's NO secrets within secrets.", "We here at Rolling Snail Studios head quarters don't do META things.", "You won't find anything!", "Nothing at all.", "Just empty void and messages galore!", "Oh for god's sake...", "Fine, here, take a rainbow-y background!", "Does that satisfy your easteregg-finding desires?", "No?", "Well, take a direct look at the super secret channel then!", "It would appear I am on my own in creating this easter egg...", "So, I shall take inspiration from my old button games and\nput what could never be accepted as a whole game in this secret!", "Enjoy!", "Right, so, you're looking for a secret within a secret.", "Which, I shall claim, does not exist.", "Yet, you persist onwards!", "What do you want from me? A medal?", "Goodness, the artists are working hard enough on the main game!", "Can't you be happy with a taco?", "Surely there's no need for you to continue...", "This is madness I tell you!", "Pure and utter madness!"}
-				    audio.pause()
-				    audio2.pause()
-				end
-			end
+            --more of an achievement, really
+            if easteregg == true and eggtimer > 0 then
+		        lg.setLineWidth(10)
+                lg.setColor(75/255, 75/255, 75/255)
+                lg.rectangle("fill", width/2 - width/5, 0, width/2.5, height/10, 50)
+                lg.rectangle("line", width/2 - width/5, 0, width/2.5, height/10, 50)
+                
+                lg.setColor(0, 0, 0)
+                lg.printf('Achievement earned!\n"Visit a castle!"', width/2, height/20, width, "center")
 
+                --image(castle, sw/2 - sw/7.5, sh/100, sw/20 - sw/100, sh/10 - sh/50);
+                lg.draw(castle, width/2 - width/7.5, height/100, (width/20 - width/100)/casle:getWidth(), (height/10 - height/50)/casle:getHeight())
+                eggtimer = eggtimer - 1
+            end
 
+	        -- ocat
+            if "debugging" then
+	            if tonumber(code) == aseed then
+	                aseed = 0
+	                page = "debug"
+	                ocatwords = {"You've unlocked the taco!", "Now you see, this is all there is to the easteregg.", "There's NO secrets within secrets.", "We here at Rolling Snail Studios head quarters don't do META things.", "You won't find anything!", "Nothing at all.", "Just empty void and messages galore!", "Oh for god's sake...", "Fine, here, take a rainbow-y background!", "Does that satisfy your easteregg-finding desires?", "No?", "Well, take a direct look at the super secret channel then!", "It would appear I am on my own in creating this easter egg...", "So, I shall take inspiration from my old button games and\nput what could never be accepted as a whole game in this secret!", "Enjoy!", "Right, so, you're looking for a secret within a secret.", "Which, I shall claim, does not exist.", "Yet, you persist onwards!", "What do you want from me? A medal?", "Goodness, the artists are working hard enough on the main game!", "Can't you be happy with a taco?", "Surely there's no need for you to continue...", "This is madness I tell you!", "Pure and utter madness!"}
+	                audio.pause()
+	                audio2.pause()
+	            end
+            end
+        end
 
         -- HUD
         if "HUD" then
@@ -865,5 +873,3 @@ function love.draw()
 
     lg.setColor(1, 1, 1, 1)
 end
-
-
