@@ -500,7 +500,49 @@ function love.draw()
             lg.setLineStyle("smooth")
             lg.setFont(gamefont)
         end
+		function love.mousepressed( x, y, button, istouch, presses )
+			if button == 1 then
+				mousedrag = true
+				mousedragcoord[1] = mouseX
+				mousedragcoord[2] = mouseY
+			end
+		end
+		function love.mousereleased( x, y, buttn, istouch, presses )
+			mpd = false
+			if mousedrag == true and paused == false then
+                mousedrag = false;
 
+                mousedragcoord[3] = mouseX + x; --right side
+                mousedragcoord[4] = mouseY + y; --bottom side
+
+
+                --process to fix bug where sides are reversed.
+                if mousedragcoord[1] > mousedragcoord[3] then
+                    mousedragcoord[3] = mousedragcoord[1]
+                    mousedragcoord[1] = mouseX + x
+                end
+                if mousedragcoord[2] > mousedragcoord[4] then
+                    mousedragcoord[4] = mousedragcoord[2]
+                    mousedragcoord[2] = mouseY + y
+                end
+
+
+                if mouseX + x < mousedragcoord[1] then
+                    mousedragcoord[1] = mouseX + x;
+                end
+                if mouseY + y < mousedragcoord[2] then
+                    mousedragcoord[2] = mouseY + y;
+                end
+
+                unitSelect = {};
+
+                for selectdetect = 1, #unitX do
+                    if unitX[selectdetect] + unitsize[1]/8 > mousedragcoord[1] and unitY[selectdetect] + unitsize[2]/4 > mousedragcoord[2] and unitX[selectdetect] - unitsize[1]/8 < mousedragcoord[2] and unitY[selectdetect] - unitsize[2]/4 < mousedragcoord[4] then
+                        unitSelect[selectdetect] = true;
+                    end
+                end
+            end
+		end
         if "map" then
             lg.draw(backgroundimage, -x, -y, 0, width / backgroundimage:getWidth(), height / backgroundimage:getHeight())
             lg.draw(castle, width - x, -y, 0, width / castle:getWidth(), height / castle:getHeight())
@@ -657,12 +699,10 @@ function love.draw()
 	    end
 		
 		--special stuff hardly ever messed with
-		if "special" then
 			--selection box
 			if mousedrag == true then
-				strokeWeight(1)
 				lg.setColor(0, 1, 1, 50/255)
-				lg.rectangle(mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
+				lg.rectangle("fill", mousedragcoord[1] - x, mousedragcoord[2] - y, mouseX - mousedragcoord[1] + x, mouseY - mousedragcoord[2] + y)
 			end
 			--more of an achievement, really
 		    if easteregg == true and eggtimer > 0 then
@@ -686,7 +726,6 @@ function love.draw()
 				    audio2.pause()
 				end
 			end
-		end
 
 
 
