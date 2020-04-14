@@ -505,15 +505,50 @@ function love.draw()
 				mousedrag = true
 				mousedragcoord[1] = mouseX
 				mousedragcoord[2] = mouseY
+			else
+				xadd = 0
+                yadd = 0
+                maxX = 0
+                maxY = 0
+                unitselectednum = 0
+                direction = "horizontal"
+                for destinationset = 1, #unitX do
+                    if unitSelect[destinationset] == true then
+                        unitselectednum = unitselectednum + 1
+                        
+                        destinationX[destinationset] = mouseX + xadd*unitsize[1]/4
+                        destinationY[destinationset] = mouseY + yadd*unitsize[2]/5
+                        
+                        if direction == "horizontal" then
+                            if xadd >= maxX then
+                                direction = "verticle"
+                                xadd = 0
+								yadd = yadd + 1
+								maxX = maxX + 1
+							else
+                                xadd = xadd + 1
+                            end
+                        else
+                            if yadd >= maxY then
+                                direction = "horizontal"
+                                yadd = 0
+								xadd = xadd + 1
+								maxY = maxY + 1
+                            else
+                                yadd = yadd + 1
+                            end
+                        end
+                    end
+                end
 			end
 		end
 		function love.mousereleased( x, y, buttn, istouch, presses )
 			mpd = false
 			if mousedrag == true and paused == false then
-                mousedrag = false;
+                mousedrag = false
 
-                mousedragcoord[3] = mouseX + x; --right side
-                mousedragcoord[4] = mouseY + y; --bottom side
+                mousedragcoord[3] = mouseX + x --right side
+                mousedragcoord[4] = mouseY + y --bottom side
 
 
                 --process to fix bug where sides are reversed.
@@ -528,17 +563,17 @@ function love.draw()
 
 
                 if mouseX + x < mousedragcoord[1] then
-                    mousedragcoord[1] = mouseX + x;
+                    mousedragcoord[1] = mouseX + x
                 end
                 if mouseY + y < mousedragcoord[2] then
-                    mousedragcoord[2] = mouseY + y;
+                    mousedragcoord[2] = mouseY + y
                 end
 
-                unitSelect = {};
+                unitSelect = {}
 
                 for selectdetect = 1, #unitX do
                     if unitX[selectdetect] + unitsize[1]/8 > mousedragcoord[1] and unitY[selectdetect] + unitsize[2]/4 > mousedragcoord[2] and unitX[selectdetect] - unitsize[1]/8 < mousedragcoord[2] and unitY[selectdetect] - unitsize[2]/4 < mousedragcoord[4] then
-                        unitSelect[selectdetect] = true;
+                        unitSelect[selectdetect] = true
                     end
                 end
             end
@@ -563,13 +598,13 @@ function love.draw()
         -- Drawing the units!
         for drawunit = 1, #unitX do
             -- Movement
-            if (destinationX[drawunit] > 0 or destinationX[drawunit] < 0) and paused == false then
+            if tonumber(destinationX[drawunit]) ~= nil and tonumber(destinationX[drawunit]) > 0 and paused == false then
                 unitX[drawunit] = unitX[drawunit] + unitspeed*(destinationX[drawunit] - unitX[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
                 unitY[drawunit] = unitY[drawunit] + unitspeed*(destinationY[drawunit] - unitY[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
                 unitanimation[drawunit] = "walk"
             end
 
-            if math.abs(unitX[drawunit] - destinationX[drawunit]) < unitspeed and math.abs(unitY[drawunit] - destinationY[drawunit]) < unitspeed then
+            if tonumber(destinationX[drawunit]) ~= nil and math.abs(unitX[drawunit] - tonumber(destinationX[drawunit])) < unitspeed and math.abs(unitY[drawunit] - tonumber(destinationY[drawunit])) < unitspeed then
                 destinationX[drawunit] = ""
                 destinationY[drawunit] = ""
                 unitanimation[drawunit] = "idle"
@@ -637,7 +672,7 @@ function love.draw()
             end
 
             --destination flag
-            if destinationX[drawunit] > 0 or destinationX[drawunit] < 0 then
+            if tonumber(destinationX[drawunit]) ~= nil and tonumber(destinationX[drawunit]) > 0 then
                 lg.setColor(0, 0, 0)
                 lg.setFont(gamefont)
                 lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "center")
@@ -686,15 +721,15 @@ function love.draw()
 		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
-		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100);
+		lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		    else
-			    lg.setColor(100/255, 0, 0);
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
-			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100);
-			    lg.setColor(1, 0, 0);
+			    lg.setColor(100/255, 0, 0)
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
+			    lg.setColor(1, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6,
 				unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100)
-			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100);
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.floor((unittype[healthbars]-1)/2 + 0.5)+1]), unitsize[2]/100)
 		    end
 	    end
 		
@@ -706,22 +741,21 @@ function love.draw()
 			end
 			--more of an achievement, really
 		    if easteregg == true and eggtimer > 0 then
-		        strokeWeight(10);
 		        lg.setColor(75/255, 75/255, 75/255)
-		        lg.rectangle(sw/2 - sw/5, 0, sw/2.5, sh/10, 50)
+		        lg.rectangle("fill", width/2 - width/5, 0, width/2.5, height/10, 50)
 		        
 		        lg.setColor(0, 0, 0)
-		        lg.printf('Achievement earned!\n"Visit a castle!"', sw/2, sh/20);
+		        lg.printf('Achievement earned!\n"Visit a castle!"', 0, width/2, height/20, "center")
 
-		        lg.draw(castle, sw/2 - sw/7.5, sh/100)
-		        eggtimer = eggtimer - 1;
+		        lg.draw(castle, width/2 - width/7.5, height/100)
+		        eggtimer = eggtimer - 1
 		    end
 
 			if "debugging" then
 				if tonumber(code) == aseed then
 				    aseed = 0
 				    page = "debug"
-				    ocatwords = {"You've unlocked the taco!", "Now you see, this is all there is to the easteregg.", "There's NO secrets within secrets.", "We here at Rolling Snail Studios head quarters don't do META things.", "You won't find anything!", "Nothing at all.", "Just empty void and messages galore!", "Oh for god's sake...", "Fine, here, take a rainbow-y background!", "Does that satisfy your easteregg-finding desires?", "No?", "Well, take a direct look at the super secret channel then!", "It would appear I am on my own in creating this easter egg...", "So, I shall take inspiration from my old button games and\nput what could never be accepted as a whole game in this secret!", "Enjoy!", "Right, so, you're looking for a secret within a secret.", "Which, I shall claim, does not exist.", "Yet, you persist onwards!", "What do you want from me? A medal?", "Goodness, the artists are working hard enough on the main game!", "Can't you be happy with a taco?", "Surely there's no need for you to continue...", "This is madness I tell you!", "Pure and utter madness!"};
+				    ocatwords = {"You've unlocked the taco!", "Now you see, this is all there is to the easteregg.", "There's NO secrets within secrets.", "We here at Rolling Snail Studios head quarters don't do META things.", "You won't find anything!", "Nothing at all.", "Just empty void and messages galore!", "Oh for god's sake...", "Fine, here, take a rainbow-y background!", "Does that satisfy your easteregg-finding desires?", "No?", "Well, take a direct look at the super secret channel then!", "It would appear I am on my own in creating this easter egg...", "So, I shall take inspiration from my old button games and\nput what could never be accepted as a whole game in this secret!", "Enjoy!", "Right, so, you're looking for a secret within a secret.", "Which, I shall claim, does not exist.", "Yet, you persist onwards!", "What do you want from me? A medal?", "Goodness, the artists are working hard enough on the main game!", "Can't you be happy with a taco?", "Surely there's no need for you to continue...", "This is madness I tell you!", "Pure and utter madness!"}
 				    audio.pause()
 				    audio2.pause()
 				end
