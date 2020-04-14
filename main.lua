@@ -555,7 +555,7 @@ function love.draw()
             end
                 
             --selection thing
-            lg.rectangle("line", unitX[drawunit] - x - unitsize[1]/8, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/4, unitsize[2]/2)
+            lg.rectangle("fill", unitX[drawunit] - x - unitsize[1]/8, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/4, unitsize[2]/2)
 
             lg.setColor(1, 1, 1)
 
