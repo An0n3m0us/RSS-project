@@ -220,15 +220,15 @@ function love.keypressed(key)
         if paused == false then
             if tonumber(key) ~= nil then
                 if tonumber(key) > 0 and tonumber(key) < 7 then
-                    unitX[#unitX] = mouseX + x
-                    unitY[#unitY] = mouseY + y
-                    unittype[#unittype] = tonumber(key) - 1
-                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key) - 2) / 2), 0)]
-                    ar[#ar] = -1
-                    ad[#ad] = false
-                    as[#as] = 0.1
+                    unitX[#unitX+1] = mouseX + x
+                    unitY[#unitY+1] = mouseY + y
+                    unittype[#unittype+1] = tonumber(key) - 1
+                    unithealth[#unithealth+1] = unitmaxhealth[math.round(((tonumber(key)-2) / 2), 0)]
+                    ar[#ar+1] = -1
+                    ad[#ad+1] = false
+                    as[#as+1] = 0.1
                     zoom = 1
-                    unitanimation[#unitanimation] = "idle"
+                    unitanimation[#unitanimation+1] = "idle"
                 end
             end
         end
@@ -615,8 +615,8 @@ function love.draw()
             end
 
             if tonumber(destinationX[drawunit]) ~= nil and math.abs(unitX[drawunit] - tonumber(destinationX[drawunit])) < unitspeed and math.abs(unitY[drawunit] - tonumber(destinationY[drawunit])) < unitspeed then
-                destinationX[drawunit] = ""
-                destinationY[drawunit] = ""
+                destinationX[drawunit] = 0
+                destinationY[drawunit] = 0
                 unitanimation[drawunit] = "idle"
             end
 
@@ -702,13 +702,13 @@ function love.draw()
                         attackcooldown[drawunit] = 50
                     end
                     if unithealth[drawunit] < 2 then
-                        unitX.splice(drawunit, 1)
-                        unitY.splice(drawunit, 1)
-                        unittype.splice(drawunit, 1)
-                        destinationX.splice(drawunit, 1)
-                        destinationY.splice(drawunit, 1)
-                        unitSelect.splice(drawunit, 1)
-                        unithealth.splice(drawunit, 1)
+                        table.remove(unitX, drawunit)
+                        table.remove(unitY, drawunit)
+                        table.remove(unittype, drawunit)
+                        table.remove(destinationX, drawunit)
+                        table.remove(destinationY, drawunit)
+                        table.remove(unitSelect, drawunit)
+                        table.remove(unithealth, drawunit)
                     end
 
                     battlemusic = true
@@ -730,15 +730,15 @@ function love.draw()
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
-		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
+		        --lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
 		    else
 			    lg.setColor(100/255, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
-			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
+			    --lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
 		    end
 	    end
 
