@@ -273,7 +273,7 @@ end
 
 function love.mousepressed(mouseX, mouseY, button, istouch, presses )
     mpd = true
-    if page == "options" then
+    if page == "settings" then
         if mouseX > width/2 - width/4 - width/20 and mouseY > height/2 - height/20 and mouseX < width/2 - width/4 + width/20 and mouseY < height/2 + height/20 then
             page = "menu"
             audiotoggle = true
@@ -298,7 +298,7 @@ function love.mousepressed(mouseX, mouseY, button, istouch, presses )
             end
         end
         if mouseX > width/12 and mouseY > height/1.9 and mouseX < width/12 + width/6 and mouseY < height/1.9 + height/7 then
-            page = "options"
+            page = "settings"
             if audiotoggle == true then
                 sfx2:play()
             end
