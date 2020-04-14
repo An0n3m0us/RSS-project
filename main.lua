@@ -209,7 +209,7 @@ bodypart = function(t1, t2, r, l, ix, iy, iw, ih)
     lg.push()
     lg.translate(t1, t2)
     lg.rotate(r)
-    lg.draw(l, ix, iy, 0, iw/l:getWidth(), ih/l:getHeight())
+    lg.draw(l, ix, iy, 0, (iw/l:getWidth()), ih/l:getHeight())
     lg.pop()
 end
 
@@ -223,7 +223,7 @@ function love.keypressed(key)
                     unitX[#unitX] = mouseX + x
                     unitY[#unitY] = mouseY + y
                     unittype[#unittype] = tonumber(key) - 1
-                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key)) / 2), 0)]
+                    unithealth[#unithealth] = unitmaxhealth[math.round(((tonumber(key) - 2) / 2), 0)]
                     ar[#ar] = -1
                     ad[#ad] = false
                     as[#as] = 0.1
@@ -271,38 +271,125 @@ function love.update(dt)
     end
 end
 
---[[
-buttons = {}
-function createButton(id, image, x, y, scale, func)
-	if buttons[tostring(id)] == nil then
-		buttons[tostring(id)] = {sfx1 = false, sfx2 = false}
-	end
-
-	-- print(y) -- Why are both values printed and used?
-	if mouseX > (x - (image:getWidth()*scale)/2) and mouseY > (y - (image:getHeight()*scale)/2)
-	and mouseX < (x + (image:getWidth()*scale)/2) and mouseY < (y + (image:getHeight()*scale)/2) then
-		lg.draw(image, x, y, -0.1, scale+0.05, scale+0.05, image:getWidth()/2, image:getHeight()/2)
-		if buttons[tostring(id)].sfx1 == false and audiotoggle == true then
-            sfx1:play()
-			buttons[tostring(id)].sfx1 = true
+function love.mousepressed(mouseX, mouseY, button, istouch, presses )
+    mpd = true
+    if page == "options" then
+        if mouseX > width/2 - width/4 - width/20 and mouseY > height/2 - height/20 and mouseX < width/2 - width/4 + width/20 and mouseY < height/2 + height/20 then
+            page = "menu"
+            audiotoggle = true
+            audio:play()
+        end
+        if mouseX > width/2 + width/4 - width/20 and mouseY > height/2 - height/20 and mouseX < width/2 + width/4 + width/20 and mouseY < height/2 + height/20 then
+            page = "menu"
+            audiotoggle = false
+            audio:pause()
+            audio2:pause()
+        end
+    end
+    if page == "menu" then
+        sfx2:setVolume(0.5)
+        if mouseX > width/12 and mouseY > height/4.6 and mouseX < width/12 + width/6 and mouseY < height/4.6 + height/7 then
+            page = "game"
+            if audiotoggle == true then
+                sfx2:play()
+            end
+            for nmbgen = 1, 1000 do
+                aseed = math.round((aa * aseed + ac) % am, 0)
+            end
+        end
+        if mouseX > width/12 and mouseY > height/1.9 and mouseX < width/12 + width/6 and mouseY < height/1.9 + height/7 then
+            page = "options"
+            if audiotoggle == true then
+                sfx2:play()
+            end
+        end
+    end
+    if page == "intro" and menuintro > 1 then
+        page = "menu"
+    end
+    if page == "game" and paused == false then
+        if button == 1 then
+            mousedrag = true
+            mousedragcoord[1] = mouseX + x -- left side
+            mousedragcoord[2] = mouseY + y -- top side
         end
 
-		if lm.isDown(1) then
-			if buttons[tostring(id)].sfx2 == false and audiotoggle == true then
-		        sfx2:play()
-				buttons[tostring(id)].sfx2 = true
-		    end
-			func()
-		else
-			buttons[tostring(id)].sfx2 = false
-		end
-	else
-		lg.draw(image, x, y, 0, scale, scale, image:getWidth()/2, image:getHeight()/2)
-		buttons[tostring(id)].sfx1 = false
-	end
+        if button == 2 then
+            xadd = 0
+            yadd = 0
+            maxX = 0
+            maxY = 0
+            unitselectednum = 0
+            direction = "horizontal"
+            for destinationset = 1, #unitX do
+                if unitSelect[destinationset] == true then
+                    unitselectednum = unitselectednum + 1
+                    
+                    destinationX[destinationset] = mouseX + x + xadd*unitsize[1]/4
+                    destinationY[destinationset] = mouseY + y + yadd*unitsize[2]/5
+                    
+                    if direction == "horizontal" then
+                        if xadd >= maxX then
+                            direction = "verticle"
+                            yadd = 0
+                            xadd = xadd + 1
+                            maxX = maxX + 1
+                        else
+                            xadd = xadd + 1
+                        end
+                    else
+                        if yadd >= maxY then
+                            direction = "horizontal"
+                            xadd = 0
+                            yadd = yadd + 1
+                            maxY = maxY + 1
+                        else
+                            yadd = yadd + 1
+                        end
+                    end
+                end
+            end
+        end
+    elseif page == "debug" then
+        aseed = aseed + 1
+    end
 end
---]]
+function love.mousereleased(mouseX, mouseY, button, istouch, presses )
+	mpd = false
+	if mousedrag == true and paused == false then
+        mousedrag = false
 
+        mousedragcoord[3] = mouseX + x --right side
+        mousedragcoord[4] = mouseY + y --bottom side
+
+
+        --process to fix bug where sides are reversed.
+        if mousedragcoord[1] > mousedragcoord[3] then
+            mousedragcoord[3] = mousedragcoord[1]
+            mousedragcoord[1] = mouseX + x
+        end
+        if mousedragcoord[2] > mousedragcoord[4] then
+            mousedragcoord[4] = mousedragcoord[2]
+            mousedragcoord[2] = mouseY + y
+        end
+
+
+        if mouseX + x < mousedragcoord[1] then
+            mousedragcoord[1] = mouseX + x
+        end
+        if mouseY + y < mousedragcoord[2] then
+            mousedragcoord[2] = mouseY + y
+        end
+
+        unitSelect = {}
+
+        for selectdetect = 1, #unitX do
+            if unitX[selectdetect] + unitsize[1]/8 > mousedragcoord[1] and unitY[selectdetect] + unitsize[2]/4 > mousedragcoord[2] and unitX[selectdetect] - unitsize[1]/8 < mousedragcoord[3] and unitY[selectdetect] - unitsize[2]/4 < mousedragcoord[4] then
+                unitSelect[selectdetect] = true
+            end
+        end
+    end
+end
 
 function love.draw()
     mouseX = lm.getX()
@@ -501,85 +588,6 @@ function love.draw()
             lg.setFont(gamefont)
         end
 
-		function love.mousepressed( x, y, button, istouch, presses )
-			if button == 1 then
-				mousedrag = true
-				mousedragcoord[1] = mouseX
-				mousedragcoord[2] = mouseY
-			else
-				xadd = 0
-                yadd = 0
-                maxX = 0
-                maxY = 0
-                unitselectednum = 0
-                direction = "horizontal"
-                for destinationset = 1, #unitX do
-                    if unitSelect[destinationset] == true then
-                        unitselectednum = unitselectednum + 1
-                        
-                        destinationX[destinationset] = mouseX + xadd*unitsize[1]/4
-                        destinationY[destinationset] = mouseY + yadd*unitsize[2]/5
-                        
-                        if direction == "horizontal" then
-                            if xadd >= maxX then
-                                direction = "verticle"
-                                xadd = 0
-								yadd = yadd + 1
-								maxX = maxX + 1
-							else
-                                xadd = xadd + 1
-                            end
-                        else
-                            if yadd >= maxY then
-                                direction = "horizontal"
-                                yadd = 0
-								xadd = xadd + 1
-								maxY = maxY + 1
-                            else
-                                yadd = yadd + 1
-                            end
-                        end
-                    end
-                end
-			end
-		end
-		function love.mousereleased( x, y, buttn, istouch, presses )
-			mpd = false
-			if mousedrag == true and paused == false then
-                mousedrag = false
-
-                mousedragcoord[3] = mouseX + x --right side
-                mousedragcoord[4] = mouseY + y --bottom side
-
-
-                --process to fix bug where sides are reversed.
-                if mousedragcoord[1] > mousedragcoord[3] then
-                    mousedragcoord[3] = mousedragcoord[1]
-                    mousedragcoord[1] = mouseX + x
-                end
-                if mousedragcoord[2] > mousedragcoord[4] then
-                    mousedragcoord[4] = mousedragcoord[2]
-                    mousedragcoord[2] = mouseY + y
-                end
-
-
-                if mouseX + x < mousedragcoord[1] then
-                    mousedragcoord[1] = mouseX + x
-                end
-                if mouseY + y < mousedragcoord[2] then
-                    mousedragcoord[2] = mouseY + y
-                end
-
-                unitSelect = {}
-
-                for selectdetect = 1, #unitX do
-                    if unitX[selectdetect] + unitsize[1]/8 > mousedragcoord[1] and unitY[selectdetect] + unitsize[2]/4 > mousedragcoord[2] and unitX[selectdetect] - unitsize[1]/8 < mousedragcoord[2] and unitY[selectdetect] - unitsize[2]/4 < mousedragcoord[4] then
-                        unitSelect[selectdetect] = true
-                    end
-                end
-            end
-		end
-
         if "map" then
             lg.draw(backgroundimage, -x, -y, 0, width / backgroundimage:getWidth(), height / backgroundimage:getHeight())
             lg.draw(castle, width - x, -y, 0, width / castle:getWidth(), height / castle:getHeight())
@@ -677,7 +685,7 @@ function love.draw()
             if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) then
                 lg.setColor(0, 0, 0)
                 lg.setFont(gamefont)
-                lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "center")
+                lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "left")
             end
 
             --castle achievement!
@@ -752,10 +760,12 @@ function love.draw()
                 lg.rectangle("line", width/2 - width/5, 0, width/2.5, height/10, 50)
                 
                 lg.setColor(0, 0, 0)
-                lg.printf('Achievement earned!\n"Visit a castle!"', width/2, height/20, width, "center")
+                lg.setFont(gamefont)
+                lg.printf('Achievement earned!\n"Visit a castle!"', 0, height/35, width, "center")
 
+                lg.setColor(1, 1, 1)
                 --image(castle, sw/2 - sw/7.5, sh/100, sw/20 - sw/100, sh/10 - sh/50);
-                lg.draw(castle, width/2 - width/7.5, height/100, (width/20 - width/100)/casle:getWidth(), (height/10 - height/50)/casle:getHeight())
+                lg.draw(castle, width/2 - width/6, height/120, (width/20 - width/100)/castle:getWidth(), (height/10 - height/50)/castle:getHeight())
                 eggtimer = eggtimer - 1
             end
 
