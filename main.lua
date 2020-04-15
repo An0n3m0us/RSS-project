@@ -223,7 +223,7 @@ function love.keypressed(key)
                     unitX[#unitX+1] = mouseX + x
                     unitY[#unitY+1] = mouseY + y
                     unittype[#unittype+1] = tonumber(key) - 1
-                    unithealth[#unithealth+1] = unitmaxhealth[math.round(((tonumber(key)-2) / 2), 0)]
+                    unithealth[#unithealth+1] = unitmaxhealth[math.round(((tonumber(key)) / 2), 0)]
                     ar[#ar+1] = -1
                     ad[#ad+1] = false
                     as[#as+1] = 0.1
@@ -607,117 +607,121 @@ function love.draw()
 
         -- Drawing the units!
         for drawunit = 1, #unitX do
-            -- Movement
-            if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) and paused == false then
-                unitX[drawunit] = unitX[drawunit] + unitspeed*(destinationX[drawunit] - unitX[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
-                unitY[drawunit] = unitY[drawunit] + unitspeed*(destinationY[drawunit] - unitY[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
-                unitanimation[drawunit] = "walk"
-            end
-
-            if tonumber(destinationX[drawunit]) ~= nil and math.abs(unitX[drawunit] - tonumber(destinationX[drawunit])) < unitspeed and math.abs(unitY[drawunit] - tonumber(destinationY[drawunit])) < unitspeed then
-                destinationX[drawunit] = 0
-                destinationY[drawunit] = 0
-                unitanimation[drawunit] = "idle"
-            end
-
-            -- Animation logic
-            if ar[drawunit] > 1 then
-                ad[drawunit] = false
-            end
-            if ar[drawunit] < -1 then
-                ad[drawunit] = true
-            end
-            if ad[drawunit] == true then
-                ar[drawunit] = ar[drawunit] + as[drawunit]
-            end
-            if ad[drawunit] == false then
-                ar[drawunit] = ar[drawunit] - as[drawunit]
-            end
-
-            --unit draw
-            if unitSelect[drawunit] == true then
-                lg.setColor(0, 1, 1, 100/255)
-            else
-                lg.setColor(0, 0, 0, 0)
-            end
-                
-            --selection thing
-            lg.rectangle("fill", unitX[drawunit] - x - unitsize[1]/8, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/4, unitsize[2]/2)
-
-            lg.setColor(1, 1, 1)
-
-            --actual unit drawing!
-            if unittype[drawunit] > 0 then
-                lg.draw(unit[unittype[drawunit]], unitX[drawunit] - x - unitsize[1]/4, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/2, unitsize[2]/2)
-            else
-                lg.push()
-                lg.translate(unitX[drawunit] - x, unitY[drawunit] - y) -- Coordinates
-
-                --animation!
-                if unitanimation[drawunit] == "walk" then
-                    as[drawunit] = 0.1
-                    --rotate(ar[drawunit]/50)
-                    ra[1] = ar[drawunit]/30
-                    ra[2] = ar[drawunit]/30
-                    ra[3] = ar[drawunit]/100
-                    ra[4] = -ar[drawunit]/10
-                    ra[5] = -ar[drawunit]
-                    ra[6] = ar[drawunit]
+            if unitX[drawunit] then
+                -- Movement
+                if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) and paused == false then
+                    unitX[drawunit] = unitX[drawunit] + unitspeed*(destinationX[drawunit] - unitX[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
+                    unitY[drawunit] = unitY[drawunit] + unitspeed*(destinationY[drawunit] - unitY[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
+                    unitanimation[drawunit] = "walk"
                 end
-                if unitanimation[drawunit] == "idle" then
-                    as[drawunit] = 0.03
-                    lg.rotate(ar[drawunit]/100)
-                    ra[1] = ar[drawunit]/50
-                    ra[2] = ar[drawunit]/50
-                    ra[3] = 0
-                    ra[4] = -ar[drawunit]/50
-                    ra[5] = -ar[drawunit]/50
-                    ra[6] = -ar[drawunit]/50
-                end
-                
-                for bpd = 1, 6 do
-                    bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
-                end
-                lg.pop()
-            end
 
-            --destination flag
-            if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) then
-                lg.setColor(0, 0, 0)
-                lg.setFont(gamefont)
-                lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "left")
-            end
+                if tonumber(destinationX[drawunit]) ~= nil and math.abs(unitX[drawunit] - tonumber(destinationX[drawunit])) < unitspeed and math.abs(unitY[drawunit] - tonumber(destinationY[drawunit])) < unitspeed then
+                    destinationX[drawunit] = 0
+                    destinationY[drawunit] = 0
+                    unitanimation[drawunit] = "idle"
+                end
 
-            --castle achievement!
-            if unitX[drawunit] > width and unitY[drawunit] > 0 and unitX[drawunit] < width*2 and unitY[drawunit] < height then
-                easteregg = true
-            end
-            
-            --dying system!
-            for collision = 1, #unitX do
-                if unitX[drawunit] + unitsize[1]/4 > unitX[collision] and unitY[drawunit] + unitsize[2]/4 > unitY[collision] and unitX[drawunit] - unitsize[1]/4 < unitX[collision] and unitY[drawunit] - unitsize[2]/4 < unitY[collision] and unittype[drawunit]%2 ~= unittype[collision]%2 and paused == false then
-                    if attacked[drawunit] ~= true then
-                        unithealth[collision] = unithealth[collision] - 1
-                        attacked[drawunit] = true
-                        attackcooldown[drawunit] = 50
+                -- Animation logic
+                if ar[drawunit] > 1 then
+                    ad[drawunit] = false
+                end
+                if ar[drawunit] < -1 then
+                    ad[drawunit] = true
+                end
+                if ad[drawunit] == true then
+                    ar[drawunit] = ar[drawunit] + as[drawunit]
+                end
+                if ad[drawunit] == false then
+                    ar[drawunit] = ar[drawunit] - as[drawunit]
+                end
+
+                --unit draw
+                if unitSelect[drawunit] == true then
+                    lg.setColor(0, 1, 1, 100/255)
+                else
+                    lg.setColor(0, 0, 0, 0)
+                end
+                    
+                --selection thing
+                lg.rectangle("fill", unitX[drawunit] - x - unitsize[1]/8, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/4, unitsize[2]/2)
+
+                lg.setColor(1, 1, 1)
+
+                --actual unit drawing!
+                if unittype[drawunit] > 0 then
+                    lg.draw(unit[unittype[drawunit]], unitX[drawunit] - x - unitsize[1]/4, unitY[drawunit] - y - unitsize[2]/4, unitsize[1]/2, unitsize[2]/2)
+                else
+                    lg.push()
+                    lg.translate(unitX[drawunit] - x, unitY[drawunit] - y) -- Coordinates
+
+                    --animation!
+                    if unitanimation[drawunit] == "walk" then
+                        as[drawunit] = 0.1
+                        --rotate(ar[drawunit]/50)
+                        ra[1] = ar[drawunit]/30
+                        ra[2] = ar[drawunit]/30
+                        ra[3] = ar[drawunit]/100
+                        ra[4] = -ar[drawunit]/10
+                        ra[5] = -ar[drawunit]
+                        ra[6] = ar[drawunit]
                     end
-                    if unithealth[drawunit] < 2 then
-                        table.remove(unitX, drawunit)
-                        table.remove(unitY, drawunit)
-                        table.remove(unittype, drawunit)
-                        table.remove(destinationX, drawunit)
-                        table.remove(destinationY, drawunit)
-                        table.remove(unitSelect, drawunit)
-                        table.remove(unithealth, drawunit)
+                    if unitanimation[drawunit] == "idle" then
+                        as[drawunit] = 0.03
+                        lg.rotate(ar[drawunit]/100)
+                        ra[1] = ar[drawunit]/50
+                        ra[2] = ar[drawunit]/50
+                        ra[3] = 0
+                        ra[4] = -ar[drawunit]/50
+                        ra[5] = -ar[drawunit]/50
+                        ra[6] = -ar[drawunit]/50
                     end
+                    
+                    for bpd = 1, 6 do
+                        bodypart(t1a[bpd]/zoom, t2a[bpd]/zoom, ra[bpd], bodyparts[bpd], ixa[bpd]/zoom, iya[bpd]/zoom, iwa[bpd]/zoom, iha[bpd]/zoom)
+                    end
+                    lg.pop()
+                end
 
-                    battlemusic = true
-                    battletime = 0
+                --destination flag
+                if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) then
+                    lg.setColor(0, 0, 0)
+                    lg.setFont(gamefont)
+                    lg.printf(drawunit, destinationX[drawunit] - x, destinationY[drawunit] - y, width, "left")
+                end
 
-                    if attackcooldown[drawunit] > 0 then
-                        attackcooldown[drawunit] = attackcooldown[drawunit] - 1
-                    else
-                        attacked[drawunit] = false
+                --castle achievement!
+                if unitX[drawunit] > width and unitY[drawunit] > 0 and unitX[drawunit] < width*2 and unitY[drawunit] < height then
+                    easteregg = true
+                end
+                
+                --dying system!
+                for collision = 1, #unitX do
+                    if unitX[collision] then
+                        if unitX[drawunit] + unitsize[1]/4 > unitX[collision] and unitY[drawunit] + unitsize[2]/4 > unitY[collision] and unitX[drawunit] - unitsize[1]/4 < unitX[collision] and unitY[drawunit] - unitsize[2]/4 < unitY[collision] and unittype[drawunit]%2 ~= unittype[collision]%2 and paused == false then
+                            if attacked[drawunit] ~= true then
+                                unithealth[collision] = unithealth[collision] - 1
+                                attacked[drawunit] = true
+                                attackcooldown[drawunit] = 50
+                            end
+                            if unithealth[drawunit] < 2 then
+                                table.remove(unitX, drawunit)
+                                table.remove(unitY, drawunit)
+                                table.remove(unittype, drawunit)
+                                table.remove(destinationX, drawunit)
+                                table.remove(destinationY, drawunit)
+                                table.remove(unitSelect, drawunit)
+                                table.remove(unithealth, drawunit)
+                            end
+
+                            battlemusic = true
+                            battletime = 0
+
+                            if attackcooldown[drawunit] > 0 then
+                                attackcooldown[drawunit] = attackcooldown[drawunit] - 1
+                            else
+                                attacked[drawunit] = false
+                            end
+                        end
                     end
                 end
             end
@@ -730,15 +734,15 @@ function love.draw()
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
-		        --lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+		        lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/12, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		    else
 			    lg.setColor(100/255, 0, 0)
 			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8, unitsize[2]/100)
 			    lg.setColor(1, 0, 0)
-			    --lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
-			    --lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)]), unitsize[2]/100)
+			    lg.rectangle("fill", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
+			    lg.rectangle("line", unitX[healthbars] - x - unitsize[1]/25, unitY[healthbars] - y - unitsize[2]/6, unitsize[1]/8*(unithealth[healthbars]/unitmaxhealth[math.round((unittype[healthbars]-1)/2, 0)+1]), unitsize[2]/100)
 		    end
 	    end
 
