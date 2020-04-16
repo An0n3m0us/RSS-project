@@ -135,7 +135,8 @@ unitpanelgraphic = function(x, y, w, h, ID)
 
     if ID ~= nil then
         --background panel
-        lg.draw(icon[unittype[ID]], x, y, 0, 0.5, 0.5, icon[unittype[ID]]:getWidth() / 2, icon[unittype[ID]]:getHeight() / 2)
+		lg.setColor(1, 1, 1)
+        lg.draw(icon[unittype[ID]+1], x, y, 0, 0.25, 0.25)
 
         -- health bar!
         lg.setLineWidth(1)
@@ -143,8 +144,8 @@ unitpanelgraphic = function(x, y, w, h, ID)
         lg.rectangle("fill", x + width / 200, y + height / 100, w - width / 100, h / 10)
         lg.rectangle("line", x + width / 200, y + height / 100, w - width / 100, h / 10)
         lg.setColor(1, 0, 0)
-        lg.rectangle("fill", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]) / 2, 0)]), h / 10)
-        lg.rectangle("line", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]) / 2, 0)]), h / 10)
+        lg.rectangle("fill", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]+1) / 2, 0)]), h / 10)
+        lg.rectangle("line", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]+1) / 2, 0)]), h / 10)
 
         -- health text
         lg.setColor(0, 0, 0)
@@ -156,7 +157,7 @@ unitpanelgraphic = function(x, y, w, h, ID)
             lg.setFont(panelfont2)
         end
 
-        lg.printf(unithealth[ID] .. "/" .. unitmaxhealth[math.round((unittype[ID]) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 20, width, "center")
+        lg.printf(unithealth[ID] .. "/" .. unitmaxhealth[math.round((unittype[ID]+1) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 20, width, "left")
 
         if h > 100 then
             lg.setFont(panelfont3)
@@ -166,7 +167,7 @@ unitpanelgraphic = function(x, y, w, h, ID)
         end
 
         lg.setColor(150/255, 150/255, 0)
-        lg.printf(unitname[math.round((unittype[ID]) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 5, width, "center")
+        lg.printf(unitname[math.round((unittype[ID]+1) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 5, width, "left")
     end
 end
 
@@ -606,7 +607,7 @@ function love.draw()
 
         -- Drawing the units!
         for drawunit = 1, #unitX do
-            if unitX[drawunit] then
+            if unitX[drawunit] ~= nil then
                 -- Movement
                 if tonumber(destinationX[drawunit]) ~= nil and (tonumber(destinationX[drawunit]) > 0 or tonumber(destinationX[drawunit]) < 0) and paused == false then
                     unitX[drawunit] = unitX[drawunit] + unitspeed*(destinationX[drawunit] - unitX[drawunit])/(math.abs(destinationX[drawunit] - unitX[drawunit]) + math.abs(destinationY[drawunit] - unitY[drawunit]))
@@ -795,11 +796,11 @@ function love.draw()
 
             lg.setColor(100/255, 50/255, 25/255, 250/255)
 
-            selectedunits = 0 -- TODO MAY HAVE PROBLEM WITH ARRAY INDEXES
+            selectedunits = 0
             for selectpanel = 1, #unitX do
                 if unitSelect[selectpanel] == true then
-                    IDredirect[selectedunits] = selectpanel
                     selectedunits = selectedunits + 1
+                    IDredirect[selectedunits] = selectpanel
                 end
             end
             if selectedunits ~= 0 then
