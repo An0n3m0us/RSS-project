@@ -70,6 +70,11 @@ function love.load()
     hudfont = lg.newFont((width+height)/40)
     pausedfont = lg.newFont((width + height)/10)
     debugfont = lg.newFont(30)
+ 
+    panelfont = lg.newFont(14)
+    panelfont2 = lg.newFont(10)
+    panelfont3 = lg.newFont((width + height)/250)
+    panelfont4 = lg.newFont((width + height)/300)
 end
 
 -- Variables
@@ -127,48 +132,42 @@ aseed = 1
 --v a0.3.1
 selectedunits = 0
 unitpanelgraphic = function(x, y, w, h, ID)
-    --background panel
-    --image(icon[unittype[ID]], x, y, w, h)
-    lg.draw(icon[unittype[ID]], x, y, 0, w, h, icon[unittype[ID]]:getWidth() / 2, icon[unittype[ID]]:getHeight() / 2)
 
-    --health bar!
-    strokeWeight(1)
-    fill(100, 0, 0)
-    rect(x + width / 200, y + height / 100, w - width / 100, h / 10)
-    fill(255, 0, 0)
-    rect(
-        x + width / 200,
-        y + height / 100,
-        (w - width / 100) * (unithealth[ID] / unitmaxhealth[round((unittype[ID] - 1) / 2)]),
-        h / 10
-    )
+    if ID ~= nil then
+        --background panel
+        lg.draw(icon[unittype[ID]], x, y, 0, 0.5, 0.5, icon[unittype[ID]]:getWidth() / 2, icon[unittype[ID]]:getHeight() / 2)
 
-    --health text
-    fill(0)
-    textAlign(CENTER, CENTER)
+        -- health bar!
+        lg.setLineWidth(1)
+        lg.setColor(100/255, 0, 0)
+        lg.rectangle("fill", x + width / 200, y + height / 100, w - width / 100, h / 10)
+        lg.rectangle("line", x + width / 200, y + height / 100, w - width / 100, h / 10)
+        lg.setColor(1, 0, 0)
+        lg.rectangle("fill", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]) / 2, 0)]), h / 10)
+        lg.rectangle("line", x + width / 200, y + height / 100, (w - width / 100) * (unithealth[ID] / unitmaxhealth[math.round((unittype[ID]) / 2, 0)]), h / 10)
 
-    if h > 100 then
-        textSize(14)
+        -- health text
+        lg.setColor(0, 0, 0)
+
+        if h > 100 then
+            lg.setFont(panelfont)
+        end
+        if h < 100 and h > 10 then
+            lg.setFont(panelfont2)
+        end
+
+        lg.printf(unithealth[ID] .. "/" .. unitmaxhealth[math.round((unittype[ID]) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 20, width, "center")
+
+        if h > 100 then
+            lg.setFont(panelfont3)
+        end
+        if h < 100 and h > 10 then
+            lg.setFont(panelfont4)
+        end
+
+        lg.setColor(150/255, 150/255, 0)
+        lg.printf(unitname[math.round((unittype[ID]) / 2, 0)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 5, width, "center")
     end
-    if h < 100 and h > 10 then
-        textSize(10)
-    end
-
-    text(
-        unithealth[ID] + "/" + unitmaxhealth[round((unittype[ID] - 1) / 2)],
-        x + width / 200 + (w - width / 100) / 2,
-        y + height / 100 + h / 20
-    )
-
-    if h > 100 then
-        textSize((width + height) / 250)
-    end
-    if h < 100 and h > 10 then
-        textSize((width + height) / 300)
-    end
-
-    fill(150, 150, 0)
-    text(unitname[round((unittype[ID] - 1) / 2)], x + width / 200 + (w - width / 100) / 2, y + height / 100 + h / 5)
 end
 
 IDredirect = {}
@@ -797,7 +796,7 @@ function love.draw()
             lg.setColor(100/255, 50/255, 25/255, 250/255)
 
             selectedunits = 0 -- TODO MAY HAVE PROBLEM WITH ARRAY INDEXES
-            for i = 1, #unitX do
+            for selectpanel = 1, #unitX do
                 if unitSelect[selectpanel] == true then
                     IDredirect[selectedunits] = selectpanel
                     selectedunits = selectedunits + 1
